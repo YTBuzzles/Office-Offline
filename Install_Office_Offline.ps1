@@ -1,3 +1,6 @@
+# add assembly 
+Add-Type -AssemblyName System.Windows.Forms
+
 # This file should be started as administrator
 if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")){
     echo "=====ERROR====="
