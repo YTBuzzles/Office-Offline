@@ -10,12 +10,11 @@ if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -
     pause
     exit
 }
-pause
+
 # now ask for directory to run installer in, not where office products will be installed
-$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ InitialDirectory = [Environment]::GetFolderPath('Downloads') }
+$FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ InitialDirectory = [Environment]::GetFolderPath('Desktop') }
 $null = $FileBrowser.ShowDialog()
 
-pause
 # change to chosen directory
 cd $FileBrowser.FileName
 
@@ -25,7 +24,7 @@ irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/permconfig.i
 irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Installer.cmd -OutFile "YAOCTRI_Installer.cmd"
 irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRU_Generator.cmd -OutFile "YAOCTRU_Generator.cmd"
 
-
+Start-Sleep -Seconds 5
 # check if the installation files are already downloaded
 if ((gci -Filter "C2R_Monthly").Name -ne "C2R_Monthly")
 {
