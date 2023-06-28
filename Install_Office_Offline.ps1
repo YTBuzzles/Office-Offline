@@ -10,7 +10,7 @@ if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -
     pause
     exit
 }
-
+pause
 # now ask for directory to run installer in, not where office products will be installed
 $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ InitialDirectory = [Environment]::GetFolderPath('Downloads') }
 $null = $FileBrowser.ShowDialog()
