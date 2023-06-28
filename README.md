@@ -2,5 +2,5 @@
 
 run this command
 ```
-irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/hello.ps1 | iex
+irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/Install_Office_Offline.ps1 | iex
 ```
