@@ -1,6 +1,6 @@
 # add assembly 
 Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Windows.Forms.OpenFileDialog
+Add-Type -AssemblyName System.Drawing
 
 # This file should be started as administrator
 if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")){
