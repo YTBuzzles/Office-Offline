@@ -15,6 +15,7 @@ if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -
 $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ InitialDirectory = [Environment]::GetFolderPath('Downloads') }
 $null = $FileBrowser.ShowDialog()
 
+pause
 # change to chosen directory
 cd $FileBrowser.FileName
 
