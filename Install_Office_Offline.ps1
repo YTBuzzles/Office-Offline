@@ -245,7 +245,7 @@ function install{
     $filecontent.Replace("SKUs=",$skus) | Set-Content -Path "C2R_Config_20230627-1649.ini"
     
     # Now run the installer
-    #Start-Process $PSScriptRoot/YAOCTRI_Installer.cmd -Verb RunAs -Wait
+    Start-Process $PSScriptRoot/YAOCTRI_Installer.cmd -Verb RunAs -Wait
     
     # Now activate the office products
     if ($checkbox14.Checked){
