@@ -200,9 +200,8 @@ $changeDirectory.ForeColor             = "#000"
 $window.Controls.AddRange(@($checkbox0,$checkbox1,$checkbox2,$checkbox3,$checkbox4,$checkbox5,$checkbox6,$checkbox7,$checkbox8,$checkbox9,$checkbox10,
     $checkbox11,$checkbox12,$checkbox13,$Instructions,$installButton,$checkbox14,$DownloadFiles,$changeDirectory,$exit))
 
-$window.CancelButton = $installButton
 
-function install{    
+function install{
     # Use name to add to SKU list
     # now for logic
     $skus = "SKUs="
@@ -245,7 +244,8 @@ function install{
     $filecontent.Replace("SKUs=",$skus) | Set-Content -Path "C2R_Config_20230627-1649.ini"
     
     # Now run the installer
-    Start-Process $PSScriptRoot/YAOCTRI_Installer.cmd -Verb RunAs -Wait
+    $installer = $changeDirectory.Text + "/YAOCTRI_Installer.cmd"
+    Start-Process $installer -Verb RunAs -Wait
     
     # Now activate the office products
     if ($checkbox14.Checked){
