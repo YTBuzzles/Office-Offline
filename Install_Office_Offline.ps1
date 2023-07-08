@@ -240,7 +240,7 @@ function install{
     if (!$checkbox12.CheckState -and !$checkbox13.CheckState){
         $filecontent = $filecontent.Replace("ExcludedApps=", "ExcludedApps=OneDrive")
     }
-    $filecontent = $filecontent.Replace("SourcePath=","SourcePath=" + $changeDirectory.Text)
+    $filecontent = $filecontent.Replace("SourcePath=","SourcePath=" + $changeDirectory.Text + "\C2R_Monthly")
     $filecontent.Replace("SKUs=",$skus) | Set-Content -Path "C2R_Config_20230708-1704.ini"
     
     # Now run the installer
