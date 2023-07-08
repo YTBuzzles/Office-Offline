@@ -240,8 +240,8 @@ function install{
     if (!$checkbox12.CheckState -and !$checkbox13.CheckState){
         $filecontent = $filecontent.Replace("ExcludedApps=", "ExcludedApps=OneDrive")
     }
-
-    $filecontent.Replace("SKUs=",$skus) | Set-Content -Path "C2R_Config_20230627-1649.ini"
+    $filecontent = $filecontent.Replace("SourcePath=","SourcePath=" + $changeDirectory.Text)
+    $filecontent.Replace("SKUs=",$skus) | Set-Content -Path "C2R_Config_20230708-1704.ini"
     
     # Now run the installer
     $installer = $changeDirectory.Text + "/YAOCTRI_Installer.cmd"
