@@ -5,9 +5,11 @@ forked from abbodi1406's Office Click-To-Run Installer (https://github.com/abbod
 
 It uses massgravel's Microsoft Activation Scripts (MAS) - Microsoft Activation Scripts (MAS)
 (https://github.com/massgravel/Microsoft-Activation-Scripts)
+
+# Run this command every 180 (or if activation goes away) days to re-acvivate
 * the activation command is ``` iex "&{$(irm https://massgrave.dev/get)} /KMS-Office" ```
 
-To run the installer open powershell as administrator and run the command below
+# To run the installer open powershell as administrator and run the command below
 ```
 irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/Install_Office_Offline.ps1 | iex
 ```
