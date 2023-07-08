@@ -249,7 +249,7 @@ function install{
     
     # Now activate the office products
     if ($checkbox14.Checked){
-    iex "&{$(irm https://massgrave.dev/get)} /KMS-Office"
+    iex "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"
     }
 }
 $InstallButton.Add_Click({install})
