@@ -276,7 +276,7 @@ $downloaded = $false
 # now download all other helper functions from github (already downloaded ones will be overwritten)
 irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Installer.cmd -OutFile "YAOCTRI_Installer.cmd"
 irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRU_Generator.cmd -OutFile "YAOCTRU_Generator.cmd"
-#irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Configurator.cmd -OutFile "YAOCTRI_Configurator.cmd"
+irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Configurator.cmd -OutFile "YAOCTRI_Configurator.cmd"
 updateDownload
 }
 $changeDirectory.Add_Click({changeDirectory})
