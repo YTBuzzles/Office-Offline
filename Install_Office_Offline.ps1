@@ -28,7 +28,7 @@ $Instructions.Text =
 "Select which programs you want to install, more common ones are highlighted in blue.
 They will all be installed automatically and activated using a script from https://massgrave.dev/"
 $Instructions.Location = New-Object System.Drawing.Point(10, 5)
-$Instructions.Width = 630
+$Instructions.Width = 530
 $Instructions.Height = 100
 $Instructions.font = New-Object System.Drawing.Font("Segoe UI",12,[System.Drawing.FontStyle]::Regular)
 $Instructions.Multiline = $true
@@ -218,14 +218,17 @@ function install{
     $skus = $skus.Remove($skus.Length-1,1)
     }
 
-    # edit file from here
     # first delete old config file
-    if ((gci -Filter "C2R_Config").Name.Length -gt 0){
-        Remove-Item -Path (gci -Filter "C2R_Config").Name
+    if ((gci -Filter "*.ini").Name.Length -gt 0){
+        Remove-Item -Path (gci -Filter "*.ini").Name
     }
 
+    # now run .ini generator
+    $configurator = $changeDirectory.Text + "/YAOCTRI_Configurator.cmd"
+    Start-Process $configurator -Verb RunAs -Wait
 
-    $file = (gci -Filter "permconfig.ini").Name
+    # now edit contents
+    $file = (gci -Filter "*.ini").Name
     $filecontent = Get-Content -Path $file -Raw
 
     # if onedrive and teams remove ExcludedApps= also for just onedrive
@@ -240,16 +243,15 @@ function install{
     if (!$checkbox12.CheckState -and !$checkbox13.CheckState){
         $filecontent = $filecontent.Replace("ExcludedApps=", "ExcludedApps=OneDrive")
     }
-    $filecontent = $filecontent.Replace("SourcePath=","SourcePath=" + $changeDirectory.Text + "\C2R_Monthly")
-    $filecontent.Replace("SKUs=",$skus) | Set-Content -Path "C2R_Config_20230708-1704.ini"
+    $filecontent.Replace("SKUs=",$skus) | Set-Content -Path $file
     
     # Now run the installer
     $installer = $changeDirectory.Text + "/YAOCTRI_Installer.cmd"
-    Start-Process $installer -Verb RunAs -Wait
+    #Start-Process $installer -Verb RunAs -Wait
     
     # Now activate the office products
     if ($checkbox14.Checked){
-    iex "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"
+    #iex "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"
     }
 }
 $InstallButton.Add_Click({install})
@@ -272,9 +274,9 @@ if ((gci -Filter "C2R_Monthly").Name -ne "C2R_Monthly"){
 $downloaded = $false
 }
 # now download all other helper functions from github (already downloaded ones will be overwritten)
-irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/permconfig.ini -OutFile "permconfig.ini"
 irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Installer.cmd -OutFile "YAOCTRI_Installer.cmd"
 irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRU_Generator.cmd -OutFile "YAOCTRU_Generator.cmd"
+#irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Configurator.cmd -OutFile "YAOCTRI_Configurator.cmd"
 updateDownload
 }
 $changeDirectory.Add_Click({changeDirectory})
