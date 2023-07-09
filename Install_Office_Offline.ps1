@@ -116,10 +116,16 @@ $checkbox13.Width = 300
 $checkbox13.Location = New-Object System.Drawing.Point(20,435)
 
 $checkbox14 = New-Object System.Windows.Forms.CheckBox
-$checkbox14.Text = "Activate"
+$checkbox14.Text = "Activate With Renewal"
 $checkbox14.Width = 300
-$checkbox14.Location = New-Object System.Drawing.Point(300,200)
+$checkbox14.Location = New-Object System.Drawing.Point(300,190)
 $checkbox14.Checked = $true
+
+$checkbox15 = New-Object System.Windows.Forms.CheckBox
+$checkbox15.Text = "Activate for 180 days"
+$checkbox15.Width = 300
+$checkbox15.Location = New-Object System.Drawing.Point(300,220)
+$checkbox15.Checked = $false
 
 $installButton                       = New-Object system.Windows.Forms.Button
 $installButton.BackColor             = "#ffffff"
@@ -154,15 +160,17 @@ echo "All finished"
 }
 $exit.Add_Click({exiting})
 
-
+$allowInstall = $false
 function updateDownload {
 if ($downloaded){
 $DownloadFiles.ForeColor = "#1d8223"
 $DownloadFiles.text = "Done"
+$allowInstall = $true
 }
 }
 updateDownload
 
+$downloaded = $true
 function download {
 if (!$downloaded){
 # Run Generator file which creates script to download
@@ -198,10 +206,11 @@ $changeDirectory.Font                  = 'Microsoft Sans Serif,10'
 $changeDirectory.ForeColor             = "#000"
 
 $window.Controls.AddRange(@($checkbox0,$checkbox1,$checkbox2,$checkbox3,$checkbox4,$checkbox5,$checkbox6,$checkbox7,$checkbox8,$checkbox9,$checkbox10,
-    $checkbox11,$checkbox12,$checkbox13,$Instructions,$installButton,$checkbox14,$DownloadFiles,$changeDirectory,$exit))
+    $checkbox11,$checkbox12,$checkbox13,$Instructions,$installButton,$checkbox14,$DownloadFiles,$changeDirectory,$exit,$checkbox15))
 
 
 function install{
+    if ($allowInstall) {
     # Use name to add to SKU list
     # now for logic
     $skus = "SKUs="
@@ -247,12 +256,15 @@ function install{
     
     # Now run the installer
     $installer = $changeDirectory.Text + "/YAOCTRI_Installer.cmd"
-    Start-Process $installer -Verb RunAs -Wait
+    #Start-Process $installer -Verb RunAs -Wait
     
     # Now activate the office products
     if ($checkbox14.Checked){
     iex "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"
+    } elseif ($checkbox15.Checked){
+    iex "&{$(irm https://massgrave.dev/get)} /KMS-Office"
     }
+}
 }
 $InstallButton.Add_Click({install})
 
@@ -260,7 +272,7 @@ $InstallButton.Add_Click({install})
 function changeDirectory(){
 # now ask for directory to run installer in, not where office products will be installed
 $FileBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
-$FileBrowser.SelectedPath = "C:\"
+$FileBrowser.SelectedPath = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 $null = $FileBrowser.ShowDialog()
 
 # change to chosen directory
@@ -268,7 +280,6 @@ cd $FileBrowser.SelectedPath
 $changeDirectory.Text = $FileBrowser.SelectedPath
 
 # check if the installation files are already downloaded
-Start-Sleep -Seconds 5
 $downloaded = $true
 if ((gci -Filter "C2R_Monthly").Name -ne "C2R_Monthly"){
 $downloaded = $false
