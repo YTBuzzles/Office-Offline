@@ -247,11 +247,11 @@ function install{
     
     # Now run the installer
     $installer = $changeDirectory.Text + "/YAOCTRI_Installer.cmd"
-    #Start-Process $installer -Verb RunAs -Wait
+    Start-Process $installer -Verb RunAs -Wait
     
     # Now activate the office products
     if ($checkbox14.Checked){
-    #iex "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"
+    iex "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"
     }
 }
 $InstallButton.Add_Click({install})
