@@ -6,15 +6,12 @@ Add-Type -AssemblyName System.Drawing
 if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")){
     echo "=====ERROR====="
     echo ""
-    echo "irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/hello.ps1 | iex"
-    echo ""
     echo "Make sure to run powershell"
     echo "as administrator"
     echo ""
     pause
     exit
 }
-
 
 ######################################################
 ################ GUI #################################
@@ -170,21 +167,16 @@ $changeDirectory.ForeColor             = "#000"
 $window.Controls.AddRange(@($checkbox0,$checkbox1,$checkbox2,$checkbox3,$checkbox4,$checkbox5,$checkbox6,$checkbox7,$checkbox8,$checkbox9,$checkbox10,
     $checkbox11,$checkbox12,$checkbox13,$Instructions,$installButton,$checkbox14,$DownloadFiles,$changeDirectory,$exit,$checkbox15))
 
-
-$allowInstall = $false
-
 function updateDownload {
+
 # check if the installation files are already downloaded
-$downloaded = $true
 if ((gci -Filter "C2R_Monthly").Name -eq "C2R_Monthly" -and ("$(pwd)" + "\C2R_Monthly" | Get-ChildItem | Measure-Object).count -gt 0){
 $DownloadFiles.ForeColor = "#1d8223"
 $DownloadFiles.text = "Done"
-$allowInstall = $true
 }
 else {
 $DownloadFiles.ForeColor = "#000000"
 $DownloadFiles.text = "Download"
-$allowInstall = $false
 }
 }
 
@@ -206,28 +198,31 @@ $changeDirectory.Add_Click({chooseDirectory})
 
 
 function download {
-# first download the generator, configurator and installer files
-irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRU_Generator.cmd -OutFile "YAOCTRU_Generator.cmd"
 
-$DownloadFiles.ForeColor = "#1d8223"
-$DownloadFiles.text = "DOWNLOADING"
+if (!((gci -Filter "C2R_Monthly").Name -eq "C2R_Monthly" -and ("$(pwd)" + "\C2R_Monthly" | Get-ChildItem | Measure-Object).count -gt 0)){
+    # first download the generator, configurator and installer files
+    irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRU_Generator.cmd -OutFile "YAOCTRU_Generator.cmd"
 
-# Run Generator file which creates script to download
-# offline install files with choices already selected
-.\YAOCTRU_Generator.cmd
-echo ""
-echo "created download script"
-echo ""
-echo "downloading installation files"
-Start-Sleep -Seconds 3
+    $DownloadFiles.ForeColor = "#1d8223"
+    $DownloadFiles.text = "DOWNLOADING"
 
-# Run generated file named "XX.X.XXXXX.XXXXX_x64_en-US_Monthly_curl.bat"
-echo(gci -Filter "*en-US_Monthly*").Name
-echo ""
-Start-Process -FilePath ((gci -Filter "*en-US_Monthly*").Name) -Wait
+    # Run Generator file which creates script to download
+    # offline install files with choices already selected
+    .\YAOCTRU_Generator.cmd
+    echo ""
+    echo "created download script"
+    echo ""
+    echo "downloading installation files"
+    Start-Sleep -Seconds 3
 
-echo "Installation files downloaded"
-updateDownload
+    # Run generated file named "XX.X.XXXXX.XXXXX_x64_en-US_Monthly_curl.bat"
+    echo(gci -Filter "*en-US_Monthly*").Name
+    echo ""
+    Start-Process -FilePath ((gci -Filter "*en-US_Monthly*").Name) -Wait
+
+    echo "Installation files downloaded"
+    updateDownload }
+
 }
 $DownloadFiles.Add_Click({download})
 
@@ -235,7 +230,8 @@ $DownloadFiles.Add_Click({download})
 
 ################################# Improve this I guess ##########################################
 function install{
-    if ($allowInstall) {
+    
+if ((gci -Filter "C2R_Monthly").Name -eq "C2R_Monthly" -and ("$(pwd)" + "\C2R_Monthly" | Get-ChildItem | Measure-Object).count -gt 0 -and $DownloadFiles.text -eq "Done") {
 
     irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Configurator.cmd -OutFile "YAOCTRI_Configurator.cmd"
     irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Installer.cmd -OutFile "YAOCTRI_Installer.cmd"
@@ -263,7 +259,7 @@ function install{
     }
 
     # now run .ini generator
-    $configurator = $changeDirectory.Text + "/YAOCTRI_Configurator.cmd"
+    $configurator = "$(pwd)" + "/YAOCTRI_Configurator.cmd"
     Start-Process $configurator -Verb RunAs -Wait
 
     # now edit contents
