@@ -25,13 +25,12 @@ $window.ClientSize = '550, 500'
 
 $Instructions = New-Object System.Windows.Forms.TextBox
 $Instructions.Text = 
-"
- 1. Change installer files directory if needed
- 2. If download button doesn't say done click it
- 3. Choose desired applications
- 4. Choose activation method
- 5. Click install
-"
+"1. Change installer files directory if needed
+2. If download button doesn't say done click it
+3. Choose desired applications
+4. Choose activation method
+5. Click install"
+
 $Instructions.Location = New-Object System.Drawing.Point(10, 5)
 $Instructions.Width = 530
 $Instructions.Height = 110
@@ -177,7 +176,7 @@ $allowInstall = $false
 function updateDownload {
 # check if the installation files are already downloaded
 $downloaded = $true
-if ((gci -Filter "C2R_Monthly").Name -eq "C2R_Monthly" -and (Get-ChildItem ("$(pwd)" + "\$(gci -Filter "C2R_Monthly")") | measure Length -s).sum /1Kb -gt 0){
+if ((gci -Filter "C2R_Monthly").Name -eq "C2R_Monthly" -and ("$(pwd)" + "\C2R_Monthly" | Get-ChildItem | Measure-Object).count -gt 0){
 $DownloadFiles.ForeColor = "#1d8223"
 $DownloadFiles.text = "Done"
 $allowInstall = $true
@@ -185,6 +184,7 @@ $allowInstall = $true
 else {
 $DownloadFiles.ForeColor = "#000000"
 $DownloadFiles.text = "Download"
+$allowInstall = $false
 }
 }
 
@@ -207,9 +207,7 @@ $changeDirectory.Add_Click({chooseDirectory})
 
 function download {
 # first download the generator, configurator and installer files
-irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Installer.cmd -OutFile "YAOCTRI_Installer.cmd"
 irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRU_Generator.cmd -OutFile "YAOCTRU_Generator.cmd"
-irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Configurator.cmd -OutFile "YAOCTRI_Configurator.cmd"
 
 $DownloadFiles.ForeColor = "#1d8223"
 $DownloadFiles.text = "DOWNLOADING"
@@ -237,7 +235,11 @@ $DownloadFiles.Add_Click({download})
 
 ################################# Improve this I guess ##########################################
 function install{
-    if (1 -eq 1) {
+    if ($allowInstall) {
+
+    irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Configurator.cmd -OutFile "YAOCTRI_Configurator.cmd"
+    irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/YAOCTRI_Installer.cmd -OutFile "YAOCTRI_Installer.cmd"
+
     $installButton.text = "Installing"
     $installButton.ForeColor = "#1d8223"
     # Use name to add to SKU list
@@ -283,8 +285,11 @@ function install{
     $filecontent.Replace("SKUs=",$skus) | Set-Content -Path $file
     
     # Now run the installer
-    $installer = $changeDirectory.Text + "/YAOCTRI_Installer.cmd"
-    #Start-Process $installer -Verb RunAs -Wait
+    $installer = "$(pwd)" + "/YAOCTRI_Installer.cmd"
+    Start-Process $installer -Verb RunAs -Wait
+
+    $installButton.text = "Install"
+    $installButton.ForeColor = "#000000"
     
     # Now activate the office products
     if ($checkbox14.Checked){
