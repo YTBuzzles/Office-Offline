@@ -13,9 +13,13 @@ irm https://raw.githubusercontent.com/YTBuzzles/Office-Offline/main/Install_Offi
 
 - Checkboxes
   - tick which programs you wish to install (More common ones are highlighted in blue)<br>
-- Activate  
+- Activate
+  - Activate with Ohook method is a permanent activation<br>
+            to install manually use
+            ```iex "&{$(irm https://massgrave.dev/get)} /Ohook"```<br> or to uninstall manually
+            use: ```iex "&{$(irm https://massgrave.dev/get)} /Ohook-Uninstall"```
   - Activate with renewal activates and installs a script that checks every 7 days if<br>
-            if needs to be activated again. Command is:<br>
+            if needs to be activated again. Install Manually:<br>
             ```iex "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"```
   - Activate for 180 days activates a single time for 180 days, if you wish to use this<br>
             when the activation stops you can run the command below to activate again<br>
