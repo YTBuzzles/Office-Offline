@@ -3,15 +3,15 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 # This file should be started as administrator
-if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")){
-    echo "=====ERROR====="
-    echo ""
-    echo "Make sure to run powershell"
-    echo "as administrator"
-    echo ""
-    pause
-    exit
-}
+# if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")){
+#     echo "=====ERROR====="
+#     echo ""
+#     echo "Make sure to run powershell"
+#     echo "as administrator"
+#     echo ""
+#     pause
+#     exit
+# }
 
 ######################################################
 ################ GUI #################################
@@ -117,23 +117,29 @@ $checkbox13.Width = 300
 $checkbox13.Location = New-Object System.Drawing.Point(20,445)
 
 $checkbox14 = New-Object System.Windows.Forms.CheckBox
-$checkbox14.Text = "Activate With Renewal"
+$checkbox14.Text = "Permanent Activation"
 $checkbox14.Width = 300
 $checkbox14.Location = New-Object System.Drawing.Point(300,190)
 $checkbox14.Checked = $true
 
 $checkbox15 = New-Object System.Windows.Forms.CheckBox
-$checkbox15.Text = "Activate for 180 days"
+$checkbox15.Text = "Activate With Renewal"
 $checkbox15.Width = 300
 $checkbox15.Location = New-Object System.Drawing.Point(300,220)
 $checkbox15.Checked = $false
+
+$checkbox16 = New-Object System.Windows.Forms.CheckBox
+$checkbox16.Text = "Activate for 180 days"
+$checkbox16.Width = 300
+$checkbox16.Location = New-Object System.Drawing.Point(300,250)
+$checkbox16.Checked = $false
 
 $installButton                       = New-Object system.Windows.Forms.Button
 $installButton.BackColor             = "#ffffff"
 $installButton.text                  = "Install"
 $installButton.width                 = 110
 $installButton.height                = 50
-$installButton.location              = New-Object System.Drawing.Point(400,340)
+$installButton.location              = New-Object System.Drawing.Point(400,350)
 $installButton.Font                  = 'Microsoft Sans Serif,10'
 $installButton.ForeColor             = "#000"
 
@@ -142,7 +148,7 @@ $DownloadFiles.BackColor             = "#ffffff"
 $DownloadFiles.text                  = "Download"
 $DownloadFiles.width                 = 130
 $DownloadFiles.height                = 50 
-$DownloadFiles.location              = New-Object System.Drawing.Point(390,250)
+$DownloadFiles.location              = New-Object System.Drawing.Point(390,280)
 $DownloadFiles.Font                  = 'Microsoft Sans Serif,10'
 $DownloadFiles.ForeColor             = "#000"
 
@@ -165,7 +171,7 @@ $changeDirectory.Font                  = 'Microsoft Sans Serif,10'
 $changeDirectory.ForeColor             = "#000"
 
 $window.Controls.AddRange(@($checkbox0,$checkbox1,$checkbox2,$checkbox3,$checkbox4,$checkbox5,$checkbox6,$checkbox7,$checkbox8,$checkbox9,$checkbox10,
-    $checkbox11,$checkbox12,$checkbox13,$Instructions,$installButton,$checkbox14,$DownloadFiles,$changeDirectory,$exit,$checkbox15))
+    $checkbox11,$checkbox12,$checkbox13,$Instructions,$installButton,$checkbox14,$DownloadFiles,$changeDirectory,$exit,$checkbox15,$checkbox16))
 
 function updateDownload {
 
@@ -225,6 +231,28 @@ if (!((gci -Filter "C2R_Monthly").Name -eq "C2R_Monthly" -and ("$(pwd)" + "\C2R_
 
 }
 $DownloadFiles.Add_Click({download})
+
+# Make activation checkboxes flip when one is clicked
+
+$checkbox14.Add_Click({flipchkbox(1)})
+$checkbox15.Add_Click({flipchkbox(2)})
+$checkbox16.Add_Click({flipchkbox(3)})
+
+function flipchkbox($num) {
+    $ParameterName
+    if ($num -eq 1){
+        $checkbox15.Checked = $false
+        $checkbox16.Checked = $false
+    }
+    if ($num -eq 2){
+        $checkbox14.Checked = $false
+        $checkbox16.Checked = $false
+    }
+    if ($num -eq 3){
+        $checkbox15.Checked = $false
+        $checkbox14.Checked = $false
+    }
+}
 
 
 
@@ -289,9 +317,11 @@ if ((gci -Filter "C2R_Monthly").Name -eq "C2R_Monthly" -and ("$(pwd)" + "\C2R_Mo
     
     # Now activate the office products
     if ($checkbox14.Checked){
-    iex "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"
-    } elseif ($checkbox15.Checked){
-    iex "&{$(irm https://massgrave.dev/get)} /KMS-Office"
+    Invoke-Expression "&{$(irm https://massgrave.dev/get)} /Ohook"}
+    elseif ($checkbox15.Checked){
+    Invoke-Expression "&{$(irm https://massgrave.dev/get)} /KMS-Office /KMS-RenewalTask"
+    } elseif ($checkbox16.Checked){
+    Invoke-Expression "&{$(irm https://massgrave.dev/get)} /KMS-Office"
     }
 }
 }
