@@ -3,15 +3,15 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 # This file should be started as administrator
-# if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")){
-#     echo "=====ERROR====="
-#     echo ""
-#     echo "Make sure to run powershell"
-#     echo "as administrator"
-#     echo ""
-#     pause
-#     exit
-# }
+if (![bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")){
+    echo "=====ERROR====="
+    echo ""
+    echo "Make sure to run powershell"
+    echo "as administrator"
+    echo ""
+    pause
+    exit
+}
 
 ######################################################
 ################ GUI #################################
